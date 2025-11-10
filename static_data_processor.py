@@ -19,11 +19,12 @@ class StaticMRIDataProcessor:
             'without_tumor_percent': 55.19
         }
         
-        # IDs de pacientes reales del dataset
+        # IDs de pacientes reales del dataset (casos reales usados)
         self.patient_ids = [
-            'TCGA_CS_4941', 'TCGA_DU_6404', 'TCGA_CS_5395', 'TCGA_DU_7008',
-            'TCGA_DU_5872', 'TCGA_CS_6290', 'TCGA_DU_6407', 'TCGA_CS_4942',
-            'TCGA_DU_7018', 'TCGA_CS_6188', 'TCGA_DU_5855', 'TCGA_DU_7299'
+            'TCGA_DU_7300_19910814', 'TCGA_DU_7306_19930512', 'TCGA_DU_6405_19851005',
+            'TCGA_FG_6690_20020226', 'TCGA_DU_A5TU_19980312', 'TCGA_EZ_7264_20010816',
+            'TCGA_DU_A5TP_19970614', 'TCGA_DU_7298_19910324', 'TCGA_HT_7879_19981009',
+            'TCGA_DU_7309_19960831', 'TCGA_HT_A5RC_19990831', 'TCGA_HT_7602_19951103'
         ]
     
     def get_statistics(self):
