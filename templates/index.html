@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de MRI - Sistema de Detección de Tumores Cerebrales</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-brain"></i> Análisis de MRI - Sistema de Detección de Tumores Cerebrales</h1>
+                <button class="refresh-btn" onclick="refreshAnalysis()">
+                    <i class="fas fa-sync-alt"></i> Actualizar Análisis
+                </button>
+            </div>
+        </header>
+
+        <!-- Estadísticas -->
+        <section class="statistics">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-images"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ stats.total }}</h3>
+                    <p>Total de Imágenes</p>
+                </div>
+            </div>
+
+            <div class="stat-card tumor">
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ stats.with_tumor }}</h3>
+                    <p>Con Tumor</p>
+                    <span class="percentage">({{ stats.with_tumor_percent }}%)</span>
+                </div>
+            </div>
+
+            <div class="stat-card healthy">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ stats.without_tumor }}</h3>
+                    <p>Sin Tumor</p>
+                    <span class="percentage">({{ stats.without_tumor_percent }}%)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gráfico de Distribución -->
+        <section class="chart-section">
+            <div class="section-header">
+                <h2><i class="fas fa-chart-bar"></i> Distribución de Tumores Cerebrales</h2>
+            </div>
+            <div class="chart-container">
+                <h3>Distribución de Imágenes: Con y Sin Tumor</h3>
+                <div class="bar-chart">
+                    <div class="bar-wrapper">
+                        <div class="bar healthy-bar" style="height: {{ stats.without_tumor_percent }}%">
+                            <span class="bar-label">{{ stats.without_tumor }}</span>
+                        </div>
+                        <span class="bar-name">Sin Tumor</span>
+                    </div>
+                    <div class="bar-wrapper">
+                        <div class="bar tumor-bar" style="height: {{ stats.with_tumor_percent }}%">
+                            <span class="bar-label">{{ stats.with_tumor }}</span>
+                        </div>
+                        <span class="bar-name">Con Tumor</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Muestras del Dataset -->
+        <section class="samples-section">
+            <div class="section-header">
+                <h2><i class="fas fa-microscope"></i> Muestras del Dataset de MRI</h2>
+            </div>
+            <div class="samples-grid-horizontal">
+                {% for sample in mixed_samples[:3] %}
+                <div class="sample-item">
+                    <h4>MRI del cerebro</h4>
+                    <img src="{{ sample.mri_image }}" alt="MRI {{ loop.index }}">
+                </div>
+                {% endfor %}
+                
+                {% for sample in mixed_samples[:2] %}
+                <div class="sample-item">
+                    <h4>Máscara - {{ 'Con tumor' if sample.has_tumor else 'Sin tumor' }}</h4>
+                    <img src="{{ sample.mask_image }}" alt="Máscara {{ loop.index }}">
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Análisis Detallado de Casos con Tumor -->
+        <section class="detailed-analysis">
+            <div class="section-header">
+                <h2><i class="fas fa-search"></i> Análisis Detallado de Casos con Tumor</h2>
+            </div>
+            <div class="analysis-grid">
+                {% for sample in samples[:12] %}
+                <div class="case-group">
+                    <div class="case-title">Caso {{ loop.index }}</div>
+                    <div class="case-images">
+                        <div class="case-image">
+                            <h4>MRI Original</h4>
+                            <img src="{{ sample.mri_image }}" alt="Caso {{ loop.index }} - MRI">
+                        </div>
+                        <div class="case-image">
+                            <h4>Máscara del Tumor</h4>
+                            <img src="{{ sample.mask_image }}" alt="Caso {{ loop.index }} - Máscara">
+                        </div>
+                        <div class="case-image">
+                            <h4>Tumor Identificado</h4>
+                            <img src="{{ sample.overlay_image }}" alt="Caso {{ loop.index }} - Overlay">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Información sobre Redes Neuronales -->
+        <section class="neural-networks-info">
+            <div class="section-header">
+                <h2><i class="fas fa-network-wired"></i> Redes Neuronales Convolucionales en Análisis Médico</h2>
+            </div>
+            
+            <div class="networks-grid">
+                <!-- AlexNet -->
+                <div class="network-card">
+                    <div class="network-header alexnet">
+                        <i class="fas fa-brain"></i>
+                        <h3>AlexNet</h3>
+                        <span class="year">2012</span>
+                    </div>
+                    <div class="network-content">
+                        <h4>Arquitectura Revolucionaria</h4>
+                        <p>AlexNet fue la red neuronal convolucional que revolucionó el campo del Deep Learning al ganar ImageNet 2012 con un margen significativo.</p>
+                        
+                        <div class="network-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span><strong>8 capas</strong> (5 convolucionales + 3 fully connected)</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-cog"></i>
+                                <span><strong>60 millones</strong> de parámetros</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Entrada: <strong>227×227×3</strong> píxeles</span>
+                            </div>
+                        </div>
+
+                        <h4>Características Clave</h4>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check-circle"></i> Uso de <strong>ReLU</strong> como función de activación</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Dropout</strong> para prevenir overfitting</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Data augmentation</strong> para mejorar generalización</li>
+                            <li><i class="fas fa-check-circle"></i> Entrenamiento con <strong>GPUs</strong></li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Local Response Normalization</strong> (LRN)</li>
+                        </ul>
+
+                        <h4>Aplicación en Imágenes Médicas</h4>
+                        <p>En el contexto de análisis de MRI, AlexNet puede ser utilizada para:</p>
+                        <ul class="applications-list">
+                            <li>Clasificación de imágenes cerebrales (con/sin tumor)</li>
+                            <li>Extracción de características de alto nivel</li>
+                            <li>Transfer learning para datasets médicos pequeños</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ResNet -->
+                <div class="network-card">
+                    <div class="network-header resnet">
+                        <i class="fas fa-project-diagram"></i>
+                        <h3>ResNet (Residual Network)</h3>
+                        <span class="year">2015</span>
+                    </div>
+                    <div class="network-content">
+                        <h4>Innovación: Conexiones Residuales</h4>
+                        <p>ResNet introdujo las conexiones residuales (skip connections) que permiten entrenar redes extremadamente profundas sin el problema de degradación de gradientes.</p>
+                        
+                        <div class="network-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span>Variantes: <strong>ResNet-18, 34, 50, 101, 152</strong></span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-cog"></i>
+                                <span>ResNet-50: <strong>25.6 millones</strong> de parámetros</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Entrada: <strong>224×224×3</strong> píxeles</span>
+                            </div>
+                        </div>
+
+                        <h4>Características Clave</h4>
+                        <ul class="features-list">
+                            <li><i class="fas fa-check-circle"></i> <strong>Conexiones residuales</strong> (skip connections)</li>
+                            <li><i class="fas fa-check-circle"></i> <strong>Batch Normalization</strong> en cada capa</li>
+                            <li><i class="fas fa-check-circle"></i> Bloques <strong>Bottleneck</strong> para eficiencia</li>
+                            <li><i class="fas fa-check-circle"></i> Permite entrenar redes con <strong>+150 capas</strong></li>
+                            <li><i class="fas fa-check-circle"></i> Mejor <strong>convergencia</strong> durante entrenamiento</li>
+                        </ul>
+
+                        <h4>Aplicación en Detección de Tumores</h4>
+                        <p>ResNet es ampliamente utilizado en análisis médico por:</p>
+                        <ul class="applications-list">
+                            <li>Mayor precisión en clasificación de tumores cerebrales</li>
+                            <li>Mejor extracción de características complejas</li>
+                            <li>Transfer learning desde modelos pre-entrenados</li>
+                            <li>Segmentación precisa de regiones tumorales</li>
+                        </ul>
+
+                        <div class="math-formula">
+                            <h4>Fórmula de Bloque Residual</h4>
+                            <p class="formula">y = F(x, {W<sub>i</sub>}) + x</p>
+                            <p class="formula-desc">Donde F(x) es la función a aprender y x es la identidad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparación -->
+            <div class="comparison-section">
+                <h3><i class="fas fa-balance-scale"></i> Comparación AlexNet vs ResNet</h3>
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Característica</th>
+                                <th>AlexNet (2012)</th>
+                                <th>ResNet-50 (2015)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Profundidad</strong></td>
+                                <td>8 capas</td>
+                                <td>50 capas</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Parámetros</strong></td>
+                                <td>~60 millones</td>
+                                <td>~25.6 millones</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Top-5 Error (ImageNet)</strong></td>
+                                <td>15.3%</td>
+                                <td>3.57%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Innovación Principal</strong></td>
+                                <td>ReLU + Dropout</td>
+                                <td>Skip Connections</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Velocidad de Entrenamiento</strong></td>
+                                <td>Moderada</td>
+                                <td>Rápida (con skip connections)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Uso en Medicina</strong></td>
+                                <td>Transfer learning básico</td>
+                                <td>Estado del arte en diagnóstico</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Por qué son importantes -->
+            <div class="importance-section">
+                <h3><i class="fas fa-lightbulb"></i> Importancia en el Análisis de Tumores Cerebrales</h3>
+                <div class="importance-grid">
+                    <div class="importance-card">
+                        <div class="importance-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h4>Detección Automática</h4>
+                        <p>Estas redes pueden identificar patrones en imágenes MRI que son difíciles de detectar para el ojo humano, mejorando la detección temprana de tumores.</p>
+                    </div>
+                    <div class="importance-card">
+                        <div class="importance-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h4>Velocidad de Diagnóstico</h4>
+                        <p>Reducen el tiempo de análisis de horas a segundos, permitiendo diagnósticos más rápidos y tratamientos más oportunos.</p>
+                    </div>
+                    <div class="importance-card">
+                        <div class="importance-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h4>Alta Precisión</h4>
+                        <p>Con transfer learning y fine-tuning, estas redes alcanzan precisiones superiores al 95% en clasificación de tumores cerebrales.</p>
+                    </div>
+                    <div class="importance-card">
+                        <div class="importance-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Asistencia Médica</h4>
+                        <p>Actúan como segunda opinión para radiólogos, reduciendo errores de diagnóstico y mejorando la calidad del cuidado médico.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask
+instance/
+.webassets-cache
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+temp/
+
+# Dataset grande (NO subir a GitHub/Render)
+Brain_MRI/TCGA_*/
+Brain_MRI/*.csv
+Brain_MRI/*.hdf5
+Brain_MRI/*.keras
+Brain_MRI/*.json
+Brain_MRI/*.ipynb
+
+# Scripts temporales de generación
+generate_samples.py
+generate_static_images.py
+
+# Notas confidenciales del desarrollador
+CONFIDENTIAL_NOTES.md
+
+# IMPORTANTE: NO ignorar las imágenes estáticas generadas
+!static/images/samples/
