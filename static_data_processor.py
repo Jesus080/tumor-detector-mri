@@ -12,11 +12,11 @@ class StaticMRIDataProcessor:
     def __init__(self):
         """Inicializa el procesador con datos pre-calculados"""
         self.stats = {
-            'total': 3064,
+            'total': 3929,
             'with_tumor': 1373,
-            'without_tumor': 1691,
-            'with_tumor_percent': 44.81,
-            'without_tumor_percent': 55.19
+            'without_tumor': 2556,
+            'with_tumor_percent': 34.95,
+            'without_tumor_percent': 65.05
         }
         
         # IDs de pacientes reales del dataset (casos reales usados)
